@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button>绘制</button>
+    <canvas id="one" width="15000" height="15000"></canvas>
+    <script>
+        const btn = document.querySelector('button')
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d')
+        btn.addEventListener('click', () => {
+            const img = new Image();
+            img.onload = function () {
+                const offscreenCanvas = new OffscreenCanvas(15000, 15000)
+                const offscreenCanvasCtx = offscreenCanvas.getContext('2d')
+                console.time('draw to offscreenCanvas')
+                offscreenCanvasCtx.drawImage(img, 0, 0, 15000, 15000)
+                console.timeEnd('draw to offscreenCanvas')
+                
+                
+                // case4 drawImage with imageBitMap
+                setTimeout(() => {
+                    console.time('transfer imageBitMap')
+                    const map = offscreenCanvas.transferToImageBitmap()
+                    console.timeEnd('transfer imageBitMap')
+
+                    console.log('before draw', new Date(), Date.now())
+                    console.time('drawImage with imageBitMap')
+                    ctx.drawImage(map, 0, 0)
+                    console.timeEnd('drawImage with imageBitMap')
+                    console.log('draw', new Date(), Date.now())
+                }, 10)
+
+            }
+            img.src = './bigimage.png'
+
+        })
+
+
+
+
+    </script>
+</body>
+
+</html>
